@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/id1" android:title="选项1"/>
+<item android:id="@+id/id2" android:title="选项2"/>
+<item android:id="@+id/id3" android:title="选项3"/>
+<item android:id="@+id/id4" android:title="选项4"/>
+<item android:id="@+id/id5" android:title="选项5"/>
+<item android:id="@+id/id6" android:title="选项6"/>
+<item android:id="@+id/id7" android:title="选项7"/>
+</menu>

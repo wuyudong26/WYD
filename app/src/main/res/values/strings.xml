@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">WYD</string>
+
+
+    <string name="tab_menu_alert">微信</string>
+    <string name="tab_menu_profile">通讯录</string>
+    <string name="tab_menu_pay">发现</string>
+    <string name="tab_menu_setting">我</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_base">BaseActivity</string>
+
+
+</resources>
