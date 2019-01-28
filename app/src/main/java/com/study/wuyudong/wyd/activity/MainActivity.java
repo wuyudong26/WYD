@@ -5,6 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -14,11 +15,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.socks.library.KLog;
 import com.study.wuyudong.wyd.R;
 import com.study.wuyudong.wyd.adapter.MainFragmentPagerAdapter;
 import com.study.wuyudong.wyd.fragment.MainForthFragment;
+import com.study.wuyudong.wyd.utils.MyLog;
 
-public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener, View.OnClickListener {
+public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener, View.OnClickListener, View.OnTouchListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private PopupWindow popupWindow;
     private PopupMenu popupMenu;
@@ -47,6 +50,39 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         mAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager());
         bindViews();
         rb_channel.setChecked(true);
+        KLog.d(TAG,"MainActivity onCreate() excuted" );
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
+        MyLog.d("MainActivity onCreate() excuted");
     }
     private void bindViews() {
         add=findViewById(R.id.add);
@@ -63,7 +99,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         vpager.setAdapter(mAdapter);
         vpager.setCurrentItem(0);
         vpager.addOnPageChangeListener(this);
-
+        search.setOnTouchListener(this);
         search.setOnClickListener(this);
         add.setOnClickListener(this);
     }
@@ -159,6 +195,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 //                        break;
                     default:
                         //使用Toast显示用户单击的菜单项
+                        MyLog.d("您单击了【"+item.getTitle()+"】菜单项");
                         Toast.makeText(MainActivity.this, "您单击了【"+item.getTitle()+"】菜单项",Toast.LENGTH_SHORT).show();
 
                 }
@@ -178,4 +215,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         return true;
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
 }

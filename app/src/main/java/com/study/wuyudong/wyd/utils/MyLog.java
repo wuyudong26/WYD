@@ -3,8 +3,10 @@ package com.study.wuyudong.wyd.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.socks.library.KLog;
 import com.study.wuyudong.wyd.app.App;
 
 import java.io.BufferedWriter;
@@ -24,12 +26,39 @@ import java.util.UUID;
  */
 @SuppressLint("SimpleDateFormat")
 public class MyLog {
+    /**
+     * 全局tag相关
+     */
+    private static String mGlobalTag;
+    private static final String TAG_DEFAULT = "MyLog";
+    private static boolean mIsGlobalTagEmpty = true;
+    private static String tag1;
+
+    private static final String SUFFIX = ".java";
+    /**
+     * 存储日志的文件名
+     */
+    private static String FILE_NAME;
     private static Boolean isRequireNewFile = true;
-    private static MyLog instance;
+    /**
+     * 存储的日志文件总个数
+     */
+    private static int FILE_NUMBERS;
+    private static int DEFAULT_FILE_NUMBERS=1;//默认文件个数1个
+    /**
+     * 存储的每个日志文件大小
+     */
+    private static int FILES_SIZE;
+    private static int DEFAULT_FILES_SIZE=50*1024*1024;//默认50M
     /**
      * 日志文件总开关
      */
     private static Boolean MY_LOG_SWITCH =false;
+
+    /**
+     * 日志打印文件开关
+     */
+    private static Boolean MY_LOG_PRINT_SWITCH =false;
     /**
      * 日志写入文件开关
      */
@@ -52,75 +81,115 @@ public class MyLog {
     private static SimpleDateFormat logfile = new SimpleDateFormat("yyyy-MM-dd");
 
     public static void v(String msg) {
-        log(msg, "v");
+        log(msg, "v",null);
+    }
+    public static void v(String tag,String msg) {
+        log(msg, "v",tag);
     }
 
     public static void d(String msg) {
-        log(msg, "d");
+        log(msg, "d",null);
+    }
+    public static void d(String tag,String msg) {
+        log(msg, "d",tag);
     }
 
     public static void i(String msg) {
-        log(msg, "i");
+        log(msg, "i",null);
+    }
+    public static void i(String tag,String msg) {
+        log(msg, "i",tag);
     }
 
     public static void w(String msg) {
-        log(msg, "w");
+        log(msg, "w",null);
+    }
+    public static void w(String tag,String msg) {
+        log(msg, "w",tag);
     }
 
     public static void e(String msg) {
-        log(msg, "e");
+        log(msg, "e",null);
+    }
+    public static void e(String tag,String msg) {
+        log(msg, "e",tag);
     }
 
 
-    private static void log(String msg, String level) {
+    private static void log(String msg, String level,String tag) {
         if(MY_LOG_SWITCH) {
             String[] info = infos();
-            String className = info[0].substring(info[0].lastIndexOf(".") + 1);
-            String methodName = info[1];
-            String lineNumber = info[2];
-            StringBuilder sb = new StringBuilder()
-                    .append(className)
-                    .append(".")
-                    .append(methodName)
-                    .append("(Line:").append(lineNumber).append(")");
+            if (MY_LOG_PRINT_SWITCH) {
+                String className = info[0];
+                String methodName = info[1];
+                String lineNumber = info[2];
+                tag1 = (tag == null ? className : tag);
+                if (mIsGlobalTagEmpty && TextUtils.isEmpty(tag)) {
+                    tag1 = TAG_DEFAULT;
+                } else if (!mIsGlobalTagEmpty) {
+                    tag1 = mGlobalTag;
+                }
+                StringBuilder sb = new StringBuilder()
+                        .append(tag1+": ")
+                        .append("[ ")
+                        .append("(")
+                        .append(className)
+                        .append(":")
+                        .append(lineNumber)
+                        .append(")")
+                        .append("#")
+                        .append(methodName)
+                        .append(" ]");
 
-            switch (level) {
-                case "v":
-                    Log.v(sb.toString(), msg);
-                    break;
-                case "d":
-                    Log.d(sb.toString(), msg);
-                    break;
-                case "i":
-                    Log.i(sb.toString(), msg);
-                    break;
-                case "w":
-                    Log.w(sb.toString(), msg);
-                    break;
-                case "e":
-                    Log.e(sb.toString(), msg);
-                    break;
-                default:
-                    break;
+                switch (level) {
+                    case "v":
+                        Log.v(sb.toString(), msg);
+                        break;
+                    case "d":
+                        Log.d(sb.toString(), msg);
+                        break;
+                    case "i":
+                        Log.i(sb.toString(), msg);
+                        break;
+                    case "w":
+                        Log.w(sb.toString(), msg);
+                        break;
+                    case "e":
+                        Log.e(sb.toString(), msg);
+                        break;
+                    default:
+                        break;
+                }
             }
-            if (MY_LOG_WRITE_TO_FILE)
+            if (MY_LOG_WRITE_TO_FILE) {
                 writeLogToFile(level, info, msg);
+            }
         }
     }
-
-    public static MyLog getInstance(Context context) {
-        if (instance == null) {
-            instance = new MyLog();
-        }
-        return instance;
-    }
-
     /**
      * 开启打印开关并存到本地
      */
-    public  void initLog(Boolean isStartLog) {
-        MY_LOG_SWITCH=isStartLog;
-        MY_LOG_WRITE_TO_FILE = isStartLog;
+    public static void initLog(Boolean isMyLogSwitch,Boolean isMyLogPrintSwitch,Boolean isMyLogWriteToFile,int fileNumbers,int filesSize,String filaName,String tag) {
+        MY_LOG_SWITCH=isMyLogSwitch;
+        MY_LOG_PRINT_SWITCH=isMyLogPrintSwitch;
+        MY_LOG_WRITE_TO_FILE = isMyLogWriteToFile;
+        FILE_NUMBERS=fileNumbers;
+        FILES_SIZE=filesSize;
+        FILE_NAME=filaName;
+        mGlobalTag = tag;
+        mIsGlobalTagEmpty = TextUtils.isEmpty(mGlobalTag);
+    }
+    public static void initLog(Boolean isMyLogSwitch,String tag){
+        MY_LOG_SWITCH=isMyLogSwitch;
+        MY_LOG_PRINT_SWITCH=isMyLogSwitch;
+        MY_LOG_WRITE_TO_FILE=isMyLogSwitch;
+        mGlobalTag = tag;
+        mIsGlobalTagEmpty = TextUtils.isEmpty(mGlobalTag);
+    }
+    public static void initLog(Boolean isMyLogSwitch){
+        MY_LOG_SWITCH=isMyLogSwitch;
+        MY_LOG_PRINT_SWITCH=isMyLogSwitch;
+        MY_LOG_WRITE_TO_FILE=isMyLogSwitch;
     }
 
     /**
@@ -129,11 +198,26 @@ public class MyLog {
      * @return className, methodName, lineNumber
      */
     private static String[] infos() {
+        getFilePath(App.getContext());
         String[] infos = new String[]{"", "", ""};
         StackTraceElement element = new Throwable().getStackTrace()[3];
-        infos[0] = element.getClassName();
-        infos[1] = element.getMethodName();
-        infos[2] = String.valueOf(element.getLineNumber());
+        String className=element.getClassName();
+        String methodName=element.getMethodName();
+        String[] classNameInfo = className.split("\\.");
+        if (classNameInfo.length > 0) {
+            className = classNameInfo[classNameInfo.length - 1] + SUFFIX;
+        }
+        if (className.contains("$")) {
+            className = className.split("\\$")[0] + SUFFIX;
+        }
+        int lineNumber = element.getLineNumber();
+
+        if (lineNumber < 0) {
+            lineNumber = 0;
+        }
+        infos[0] = className;
+        infos[1] =methodName;
+        infos[2] = String.valueOf(lineNumber);
         return infos;
 
     }
@@ -146,6 +230,12 @@ public class MyLog {
      * @param text      msg
      */
     private static void writeLogToFile(String myLogType, String[] info, String text) {// 新建或打开日志文件
+        if(FILE_NUMBERS<1){
+            FILE_NUMBERS=DEFAULT_FILE_NUMBERS;
+        }
+        if(FILES_SIZE<1){
+            FILES_SIZE=DEFAULT_FILES_SIZE;
+        }
         String className = info[0];
         String methodName = info[1];
         String lineNumber = info[2];
@@ -153,10 +243,16 @@ public class MyLog {
         StringBuilder log = new StringBuilder()
                 .append(myLogSdf.format(nowTime))
                 .append(" [").append(myLogType.toUpperCase()).append("] ")
+                .append(tag1+": ")
+                .append("[ ")
+                .append("(")
                 .append(className)
-                .append(".")
+                .append(":")
+                .append(lineNumber)
+                .append(")")
+                .append("#")
                 .append(methodName)
-                .append("(Line:").append(lineNumber).append("):")
+                .append(" ]")
                 .append(text);
 
         File localFile = new File(MY_LOG_PATH, "LocalLog");
@@ -165,13 +261,16 @@ public class MyLog {
             localFile.mkdirs();
         }
         if (getFils() == null) {
-            String fileName =getRandomNumber() + ".log";
+            if(FILE_NAME==null){
+                FILE_NAME="MyLog_";
+            }
+            String fileName =FILE_NAME+getRandomNumber() + ".log";
             File file = new File(localFile, fileName);
             writeDate(file, log);
         } else {
             File[] files = getFils();
             for (int i = 0; i < files.length; i++) {
-                if (files[i].length() < 1024 * 10*1024) {
+                if (files[i].length() < FILES_SIZE) {
                     isRequireNewFile = false;
                     File file1 = files[i];
                     writeDate(file1, log);
@@ -180,13 +279,19 @@ public class MyLog {
                     isRequireNewFile = true;
                 }
             }
-            if (isRequireNewFile && getFils().length < 5) {
-                String fileName = getRandomNumber() + ".log";
+            if (isRequireNewFile && getFils().length < FILE_NUMBERS) {
+                if(FILE_NAME==null){
+                    FILE_NAME="MyLog_";
+                }
+                String fileName =FILE_NAME+getRandomNumber() + ".log";
                 File file = new File(localFile, fileName);
                 writeDate(file, log);
-            } else if (isRequireNewFile && getFils().length >= 5) {
+            } else if (isRequireNewFile && getFils().length >= FILE_NUMBERS) {
                 getFils()[0].delete();
-                String fileName = getRandomNumber() + ".log";
+                if(FILE_NAME==null){
+                    FILE_NAME="MyLog_";
+                }
+                String fileName = FILE_NAME+getRandomNumber() + ".log";
                 File file = new File(localFile, fileName);
                 writeDate(file, log);
             }
